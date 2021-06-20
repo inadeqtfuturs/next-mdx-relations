@@ -1,0 +1,14 @@
+{
+  "name": "next-mdx-relations",
+  "version": "0.0.1",
+  "main": "/src/index.ts",
+  "peerDependencies": {
+    "fast-glob": "^3.2.5",
+    "gray-matter": "^4.0.3",
+    "next-mdx-remote": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.2",
+    "typescript": "^4.2.3"
+  }
+}
