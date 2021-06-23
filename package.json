@@ -9,7 +9,10 @@
     "lint": "eslint --fix . && echo 'linted 💯'",
     "test": "jest --collectCoverage",
     "testing": "jest --watchAll --collectCoverage",
-    "example:dev": "yarn workspace ts-example dev"
+    "example:dev": "yarn workspace ts-example dev",
+    "example:build": "yarn workspace ts-example build",
+    "package:build": "yarn workspace next-mdx-relations build",
+    "package:release": "yarn workspace next-mdx-relations release"
   },
   "dependencies": {
     "fast-glob": "^3.2.5",

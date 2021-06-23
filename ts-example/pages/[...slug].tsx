@@ -9,7 +9,6 @@ function Slug({ mdx, ...pageNode }) {
     frontmatter: { author, tags, title },
     meta: { mentionedIn }
   } = pageNode;
-  console.log({ mentionedIn });
   return (
     <>
       <h1>{title}</h1>

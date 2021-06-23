@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
-import { Page } from 'next-mdx-relations/src/types';
+import { Page } from 'next-mdx-relations/dist/types';
 import { getPages } from '../next-mdx-relations.config';
 
 export default function Blog({ posts }: { posts: Page[] }) {

@@ -21,6 +21,7 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: ['@typescript-eslint'],
+  ignorePatterns: ['**/dist/*'],
   rules: {
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],

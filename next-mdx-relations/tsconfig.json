@@ -4,5 +4,6 @@
   "compilerOptions": {
     "isolatedModules": false
   },
+  "declaration": true,
   "include": ["src/**/*.ts"]
 }
