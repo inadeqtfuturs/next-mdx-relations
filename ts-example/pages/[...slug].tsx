@@ -1,14 +1,20 @@
 import React from 'react';
 import { MDXRemote } from 'next-mdx-remote';
 import Link from 'next/link';
+import { MDXPage, Params } from 'next-mdx-relations/dist/types';
 import styles from '../styles/Home.module.css';
 import { getPaths, getPageProps } from '../next-mdx-relations.config';
 
-function Slug({ mdx, ...pageNode }) {
+function Slug({ mdx, ...pageNode }: MDXPage) {
   const {
-    frontmatter: { author, tags, title },
+    frontmatter,
     meta: { mentionedIn }
   } = pageNode;
+  const {
+    author,
+    tags,
+    title
+  }: { author: string; tags: string[]; title: string } = frontmatter;
   return (
     <>
       <h1>{title}</h1>
@@ -28,14 +34,14 @@ function Slug({ mdx, ...pageNode }) {
           <hr />
           <h2>mentioned in</h2>
           {mentionedIn.map(
-            ({ frontmatter: { title, tags }, params: { slug } }) => (
+            ({ frontmatter: { title, tags }, params: { slug } }: MDXPage) => (
               <div key={title} className={styles.postWrapper}>
                 <Link href={slug.join('/')} passHref>
                   <a className={styles.link}>{title}</a>
                 </Link>
                 <span>
                   tags:{' '}
-                  {tags.map(t => (
+                  {tags.map((t: string) => (
                     <span key={t} className={styles.tag}>
                       {t}
                     </span>
@@ -50,7 +56,7 @@ function Slug({ mdx, ...pageNode }) {
   );
 }
 
-export async function getStaticProps({ params: { slug } }) {
+export async function getStaticProps({ params: { slug } }: Params) {
   const props = await getPageProps(slug);
 
   return {

@@ -13,6 +13,8 @@ import {
   File,
   MetaGenerator,
   Page,
+  MDXPage,
+  Params,
   RelationalGenerator,
   RelationsConfig,
   Sort
@@ -21,7 +23,7 @@ import {
 export async function getPaths(
   config: RelationsConfig,
   pathToContent?: string
-) {
+): Promise<Params[]> {
   const usePath = pathToContent || config.content;
   const files = await getFiles(config, usePath);
   // filters out the filepath and returns JUST params object
@@ -43,7 +45,7 @@ async function generatePage(file: File): Promise<Page> {
 async function generateMeta(
   page: Page,
   metaGenerators: Record<string, MetaGenerator> | null = null
-) {
+): Promise<{} | undefined> {
   if (!metaGenerators) return;
   return Object.entries(metaGenerators).reduce(
     (acc, [k, v]) => ({
@@ -57,7 +59,7 @@ async function generateMeta(
 async function generateRelations(
   pages: Page[],
   relationGenerators: Record<string, RelationalGenerator> | null = null
-) {
+): Promise<Page[]> {
   if (!relationGenerators) return pages;
   return Object.values(relationGenerators).reduce(
     (acc, generator) => generator(acc),
@@ -80,7 +82,10 @@ function sortPages(pages: Page[], sort: Sort | undefined) {
   return sortedPages;
 }
 
-function filterPages(pages: Page[], { meta, frontmatter }: Partial<Page>) {
+function filterPages(
+  pages: Page[],
+  { meta, frontmatter }: Partial<Page>
+): Page[] {
   const pathValues = getPathValues({ meta, frontmatter });
   if (!Array.isArray(pathValues)) return pages;
   const filteredPages = pages.filter(page =>
@@ -142,7 +147,7 @@ export async function getPages(
 export async function getPageProps(
   config: RelationsConfig,
   slug: string | string[]
-) {
+): Promise<MDXPage | null> {
   const pages = await getPages(config);
   const page = pages.find(
     p => JSON.stringify(p.params.slug) === JSON.stringify(slug)
@@ -164,7 +169,10 @@ export async function getPageProps(
 // return a set of paths for a given tag/meta item
 // todo: clean up
 // add argument for setting params
-export async function getPathsByProp(config: RelationsConfig, prop: string) {
+export async function getPathsByProp(
+  config: RelationsConfig,
+  prop: string
+): Promise<string[]> {
   const pages = await getPages(config, {});
   const paths = pages.reduce((acc: string[], curr: Page) => {
     const pageProp = getValueFromPath(curr, prop);

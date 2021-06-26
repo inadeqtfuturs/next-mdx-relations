@@ -1,11 +1,11 @@
 import markdownLinkExtractor from 'markdown-link-extractor';
-import createUtils from 'next-mdx-relations';
+import createUtils from 'next-mdx-relations/dist/';
 
 export const { getPages, getPaths, getPageProps } = createUtils({
   content: '../content',
   metaGenerators: {
     mentions: node =>
-      markdownLinkExtractor(node.content).filter(l => l[0] === '/')
+      markdownLinkExtractor(node.content).filter((l: string) => l[0] === '/')
   },
   relationGenerators: {
     mentionedIn: nodes =>

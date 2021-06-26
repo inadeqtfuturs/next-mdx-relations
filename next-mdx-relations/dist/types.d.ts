@@ -1,22 +1,27 @@
 import { Pluggable, Compiler } from 'unified';
+import { MDXRemoteSerializeResult } from 'next-mdx-remote';
 export declare type PathValue = {
     objectPath: string[];
     value: string[];
 };
-export declare type File = {
-    filePath: string;
+export declare type Params = {
     params: {
         slug: string[];
     };
 };
-export declare type Page = {
+export declare type File = Params & {
     filePath: string;
-    params: {
-        slug: string[];
-    };
+};
+export declare type Metadata = {
+    [key: string]: any;
+};
+export declare type Page = File & {
     content: string;
-    frontmatter?: undefined | Record<string, any>;
-    meta?: undefined | Record<string, any>;
+    frontmatter?: any;
+    meta?: any;
+};
+export declare type MDXPage = Page & {
+    mdx: MDXRemoteSerializeResult;
 };
 export declare type Sort = {
     by: string;
