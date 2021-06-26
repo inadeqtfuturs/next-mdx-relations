@@ -1,4 +1,4 @@
-const withTM = require('next-transpile-modules')(['next-mdx-relations']);
+const withTM = require('next-transpile-modules')([]);
 
 module.exports = withTM({
   reactStrictMode: true

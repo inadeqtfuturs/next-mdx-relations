@@ -1,5 +1,5 @@
 import markdownLinkExtractor from 'markdown-link-extractor';
-import createUtils from 'next-mdx-relations/dist/';
+import createUtils from 'next-mdx-relations/dist';
 
 export const { getPages, getPaths, getPageProps } = createUtils({
   content: '../content',
