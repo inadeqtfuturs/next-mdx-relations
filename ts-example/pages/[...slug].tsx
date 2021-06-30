@@ -1,7 +1,7 @@
 import React from 'react';
 import { MDXRemote } from 'next-mdx-remote';
 import Link from 'next/link';
-import { MDXPage, Params } from 'next-mdx-relations/dist/types';
+import { MDXPage, Params } from 'next-mdx-relations';
 import styles from '../styles/Home.module.css';
 import { getPaths, getPageProps } from '../next-mdx-relations.config';
 

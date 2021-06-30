@@ -20,7 +20,7 @@ import {
   Sort
 } from './types';
 
-async function getPaths(
+export async function getPaths(
   config: RelationsConfig,
   pathToContent?: string
 ): Promise<Params[]> {
@@ -115,7 +115,7 @@ function filterPages(
   return filteredPages;
 }
 
-async function getPages(
+export async function getPages(
   config: RelationsConfig,
   { meta = {}, frontmatter = {} }: Partial<Page> = {}
 ): Promise<Page[]> {
@@ -144,7 +144,7 @@ async function getPages(
   return pages;
 }
 
-async function getPageProps(
+export async function getPageProps(
   config: RelationsConfig,
   slug: string | string[]
 ): Promise<MDXPage | null> {
@@ -169,7 +169,7 @@ async function getPageProps(
 // return a set of paths for a given tag/meta item
 // todo: clean up
 // add argument for setting params
-async function getPathsByProp(
+export async function getPathsByProp(
   config: RelationsConfig,
   prop: string
 ): Promise<string[]> {
@@ -197,3 +197,14 @@ export function createUtils(config: RelationsConfig) {
     getPageProps: (slug: string | string[]) => getPageProps(config, slug)
   };
 }
+
+export {
+  File,
+  MetaGenerator,
+  Page,
+  MDXPage,
+  Params,
+  RelationalGenerator,
+  RelationsConfig,
+  Sort
+};

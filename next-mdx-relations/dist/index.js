@@ -190,3 +190,7 @@ function createUtils(config) {
 }
 
 exports.createUtils = createUtils;
+exports.getPageProps = getPageProps;
+exports.getPages = getPages;
+exports.getPaths = getPaths;
+exports.getPathsByProp = getPathsByProp;
