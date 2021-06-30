@@ -7,7 +7,7 @@
   "types": "index.d.ts",
   "scripts": {
     "build": "rm -rf dist && rollup --config",
-    "release": "yarn build && yarn publish dist"
+    "release": "yarn build && yarn publish"
   },
   "peerDependencies": {
     "fast-glob": "^3.2.5",
