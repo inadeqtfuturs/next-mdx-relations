@@ -2,17 +2,19 @@
 
 i have markdown. i want to generate relations between them.
 
-`next-mdx-relations` is a light set of utilities for generation relational data between markdown files. it is built on top of [`next-mdx-remote`](https://github.com/hashicorp/next-mdx-remote), which it uses as a peer dependency. `next-mdx-relations` abstracts away much of the boilerplate you would write to spin up an md/x powered next.js site, while providing control over how your md/x is processed.
+`next-mdx-relations` is a light set of utilities for generation relational data between markdown files. it is built to work with [`next-mdx-remote`](https://github.com/hashicorp/next-mdx-remote), which it uses as a peer dependency. `next-mdx-relations` abstracts away much of the boilerplate you would write to spin up an md/x powered next.js site, while providing control over how your md/x is processed.
 
 ## toc
 
 1. [getting started](#getting-started)
 2. [example](#example)
 3. [api](#api)
+4. [typescript](#typescript)
+5. [future](#future)
 
 ## getting started
 
-1. Add package and peer dependencies.
+1. Add package and peer dependencies
 
 ``` shell
 yarn add fast-glob gray-matter next-mdx-remote next-mdx-relations
@@ -21,7 +23,7 @@ yarn add fast-glob gray-matter next-mdx-remote next-mdx-relations
 2. Create a `next-mdx-relations.config.js` in your project (preferably the root, but it can be anywhere)
 
 ``` js
-import createUtils from 'next-mdx-relations';
+import { createUtils } from 'next-mdx-relations';
 
 export const {
   getPaths,
@@ -75,7 +77,7 @@ export default function BlogIndex({ posts }) {
 }
 
 export async function getStaticProps() {
-  const posts = await getPages();
+  const posts = await getPages(); // gets an array of all pages in the /content directory
 
   return {
     props: {
@@ -86,20 +88,26 @@ export async function getStaticProps() {
 ```
 
 ``` js
-// /pages/blog/[slug].js
+// /pages/blog/[...slug].js
 // https://nextjs.org/docs/routing/dynamic-routes
 
 import React from 'react';
-import Post from '../../src/components/Post';
+import { MDXRemote } from 'next-mdx-remote';
 import { getPages } from '../../next-mdx-relations.config.js';
 
 export default function Slug({ mdx, ...pageNode }) {
   const { frontmatter: { title, excerpt } } = pageNode;
-  return <Post content={mdx} node={pageNode} />
+  return (
+    <article>
+      <h1>{title}</h1>
+      <p>{excerpt}</p>
+      <MDXRemote {...mdx} />
+    </article>
+  )
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const props = await getPageProps(slug);
+  const props = await getPageProps(slug); // returns pageProps and serialized mdx based on provided slug
 
   return {
     props
@@ -107,7 +115,7 @@ export async function getStaticProps({ params: { slug } }) {
 }
 
 export async function getStaticPaths() {
-  const paths = await getPaths();
+  const paths = await getPaths(); // returns array of paths for generating pages
   
   return {
     paths,
@@ -161,7 +169,7 @@ sort: {
 
 ``` js
 import { DateTime } from 'luxon';
-import createUtils from 'next-mdx-relations';
+import { createUtils } from 'next-mdx-relations';
 
 export const {
   getPaths,
@@ -181,7 +189,7 @@ export const {
 })
 ```
 
-`metaGenerators` have access to the `node` or `file`. Anything in the content or frontmatter of the file is available to add additional meta. Note that there parameters are not combined with the frontmatter in the file but placed in their own `param` object so as not to override anything static in the file itself.
+`metaGenerators` have access to the `node` or `file`. Anything in the content or frontmatter of the file is available to add additional meta. Note that these parameters are not combined with the frontmatter in the file but placed in their own `meta` object so as not to override anything static in the file itself.
 
 #### relationGenerators: object?
 
@@ -189,14 +197,14 @@ export const {
 
 ``` js
 import { DateTime } from 'luxon';
-import createUtils from 'next-mdx-relations';
+import { createUtils } from 'next-mdx-relations';
 
 export const {
   getPaths,
   getPages
 } = createUtils({
   content: '/content',
-  metaGenerators: {
+  relationGenerators: {
     directionalLinks: nodes => {
       const sortedNodes = nodes
         // we have not sorted all our files yet, so to create
@@ -207,8 +215,8 @@ export const {
           const next = index < array.length -1 ? array[index + 1] : null;
           return {
             ...node,
-            params: {
-              ...node.params,
+            meta: {
+              ...node.meta,
               prev,
               next
             }
@@ -219,3 +227,105 @@ export const {
   }
 })
 ```
+
+In its current form, you can mutate any part of a given node using `relationGenerators`. In general, it's best to add this relational data to the `meta` attribute as to not mutate the frontmatter or other parts of the node.
+
+#### mdxOptions: MDXOptions?
+
+Because we're interfacing with `next-mdx-remote`, this object allows us to pass in `MDXOptions`. You can see [their documentation](https://github.com/hashicorp/next-mdx-remote#apis) for more details.
+
+### functions
+
+The `createUtils` function generates the following functions based on the provided config object:
+
+#### `await getPaths`: string?
+
+`getPaths` returns an array of paths for generating pages when used in a catchall `[...slug].js`'s `getStaticPaths`. It takes an optional string parameter which overrides the content directory specified in the config object. For example, if you have nested folders and you want paths just for a subset of folders, you could pass that directory in here.
+
+``` js
+const paths = await getPaths(); // all paths from content folder
+const subSetOfPaths = await getPaths('/content/blog'); // paths from /content/blog folder
+```
+
+#### `await getPages`: { meta: object?, frontmatter:object? }: object?
+
+`getPages` returns an array of pages, including frontmatter, metadata, and relational data (everything but the serialized markdown content) based on the files in the content directory specified in the config object. It optionally takes an object that includes keys for `meta` and `frontmatter`, allowing you to filter for a specific subset of pages.
+
+``` js
+const drafts = await getPages({ frontmatter: { draft: true } }); // pages set to draft: true
+const published = await getPages({ frontmatter: { draft: false } }); // pages set to draft: false
+const gardenPosts = await getPages({ frontmatter: { type: 'garden' } }); // pages with type 'garden'
+const postsTaggedReactorNextJS = await getPages({ frontmatter: { draft: false, tags: ['react', 'nextjs'] } }); // pages with draft false and tags that include 'react' and/or 'nextjs'
+```
+
+#### `getPageProps`: string | string[]
+
+`getPageProps` returns a page, including frontmatter, metadata, relational data, and serialized markdown content based on a provided slug. It is used in conjunction with `getPaths` in a catchall `[...slug].js` file. See the `[...slug].js` in the above [example](#example).
+
+Below, you'll find the object `getPageProps` returns. Note that the `mdx` value should be passed into `next-mdx-remote`'s `MDXRemote` remote component.
+
+``` ts
+const {
+  params: {
+    slug: string[]
+  },
+  filePath: string,
+  content: string,
+  frontmatter: any,
+  meta: any,
+  mdx: MDXRemoteSerializedResult
+} = await getPageProps();
+```
+
+#### `getPathsByProp`: string
+
+`getPathsByProp` takes a key value in dot notation that corresponds to a page's frontmatter or a piece of meta- or relational data and returns an array of paths that correspond to that prop. You might use something like this if you wanted a list of tags and generate pages for those tags. Below is an example of the `getStaticPaths` and `getStaticProps` to generate tag pages.
+
+``` js
+// pages/tag/[tag].js
+
+...
+
+export async function getStaticProps({ params: { tag } }) {
+  const posts = await getPages({
+    frontmatter: { draft: null, tags: tag }
+  });
+
+  return {
+    props: {
+      tag,
+      posts
+    }
+  };
+};
+
+export async function getStaticPaths() {
+  const paths = await getPathsByProp('frontmatter.tags');
+  const test = paths.map(p => ({ params: { tag: p } }));
+
+  return {
+    paths: test,
+    fallback: false
+  };
+}
+```
+
+## typescript
+
+`next-mdx-relations` was written in and supports typescript. See the `ts-example` repo for an overview. Types can be exported from `next-mdx-relations`.
+
+``` ts
+import { File, MetaGenerator, Page, MDXPage, Params, RelationalGenerator, RelationsConfig, Sort } from 'next-mdx-relations';
+```
+
+See [`types.ts`](https://github.com/inadeqtfuturs/next-mdx-relations/blob/main/next-mdx-relations/src/types.ts) for an overview.
+
+## future
+
+`next-mdx-relations` is in early days. Some things I'd like to do moving forward:
+
+[ ]: more granular `getPathsByProp` api
+  [ ]: handle slugs and dashed tags
+[ ]: more granular `getPages` api and control over filtering
+[ ]: explicit `frontmatter` and `meta` types
+[ ]: implement more guard rails for manipulating data (prevent overwriting `frontmatter` or `meta`)

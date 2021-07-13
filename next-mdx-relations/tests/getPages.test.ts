@@ -1,4 +1,4 @@
-import createUtils from '../src';
+import { createUtils } from '../src';
 
 describe('`getPages` functionality', () => {
   const { getPages } = createUtils({

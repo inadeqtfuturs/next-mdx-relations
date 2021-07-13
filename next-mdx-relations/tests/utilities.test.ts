@@ -1,4 +1,4 @@
-import createUtils from '../src';
+import { createUtils } from '../src';
 
 describe('`getValueFromPath` functionality', () => {
   const { getPages } = createUtils({
