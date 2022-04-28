@@ -47,7 +47,9 @@ export async function getFiles(
   const usePath = pathToFiles || config.content;
   const slugRewrites = config?.slugRewrites || null;
   const pathToContent = path.join(process.cwd(), usePath);
-  const files = await glob.sync(`${pathToContent}/**/*.(md|mdx)`);
+  const files = await glob.sync(`${pathToContent}/**/*.(md|mdx)`, {
+    ignore: ['**/node_modules/**']
+  });
   if (!files) return [];
 
   return files.map(filePath => {
