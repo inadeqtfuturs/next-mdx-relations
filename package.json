@@ -20,24 +20,24 @@
     "next-mdx-remote": "^4.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.10",
-    "@babel/preset-env": "^7.13.10",
+    "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
     "@babel/preset-typescript": "^7.13.0",
-    "@types/jest": "^26.0.21",
+    "@types/jest": "^27.4.1",
     "@types/mock-fs": "^4.13.0",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@typescript-eslint/parser": "^4.18.0",
-    "babel-jest": "^27.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "babel-jest": "^28.0.3",
     "esbuild": "^0.14.38",
     "esbuild-jest": "^0.5.0",
-    "eslint": "^7.22.0",
+    "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-prettier": "^3.3.1",
-    "jest": "^27.0.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^28.0.3",
     "mock-fs": "^5.0.0",
     "prettier": "^2.2.1",
-    "ts-jest": "^27.0.3",
-    "typescript": "^4.2.3"
+    "ts-jest": "^28.0.0@next.3",
+    "typescript": "^4.6.4"
   }
 }

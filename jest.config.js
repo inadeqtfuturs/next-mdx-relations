@@ -16,6 +16,8 @@ module.exports = {
     ]
   },
   moduleNameMapper: {
-    'estree-walker': '<rootDir>/node_modules/estree-walker/src/index.js'
+    'estree-walker': '<rootDir>/node_modules/estree-walker/src/index.js',
+    'is-reference': '<rootDir>/node_modules/is-reference/dist/is-reference.js',
+    periscopic: '<rootDir>/node_modules/periscopic/src/index.js'
   }
 };
