@@ -40,13 +40,15 @@ function getSimplifiedSlug(s) {
 async function getFiles(config, pathToFiles) {
     const usePath = pathToFiles || config.content;
     const slugRewrites = (config === null || config === void 0 ? void 0 : config.slugRewrites) || null;
-    const pathToContent = path__default['default'].join(process.cwd(), usePath);
-    const files = await glob__default['default'].sync(`${pathToContent}/**/*.(md|mdx)`);
+    const pathToContent = path__default["default"].join(process.cwd(), usePath);
+    const files = await glob__default["default"].sync(`${pathToContent}/**/*.(md|mdx)`, {
+        ignore: ['**/node_modules/**']
+    });
     if (!files)
         return [];
     return files.map(filePath => {
         const slug = filePath
-            .replace(new RegExp(`${path__default['default'].extname(filePath)}$`), '')
+            .replace(new RegExp(`${path__default["default"].extname(filePath)}$`), '')
             .replace(`${pathToContent}/`, '')
             .split('/');
         if (slugRewrites && slugRewrites[slug[0]]) {
@@ -65,7 +67,7 @@ async function getPaths(config, pathToContent) {
 }
 async function generatePage(file) {
     const mdxSource = await fs.promises.readFile(file.filePath);
-    const { content, data: frontmatter } = matter__default['default'](mdxSource);
+    const { content, data: frontmatter } = matter__default["default"](mdxSource);
     return {
         ...file,
         content,
