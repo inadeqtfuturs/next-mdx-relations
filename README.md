@@ -324,8 +324,8 @@ See [`types.ts`](https://github.com/inadeqtfuturs/next-mdx-relations/blob/main/n
 
 `next-mdx-relations` is in early days. Some things I'd like to do moving forward:
 
-[ ]: more granular `getPathsByProp` api
-  [ ]: handle slugs and dashed tags
-[ ]: more granular `getPages` api and control over filtering
-[ ]: explicit `frontmatter` and `meta` types
-[ ]: implement more guard rails for manipulating data (prevent overwriting `frontmatter` or `meta`)
+- [ ]: more granular `getPathsByProp` api
+- [ ]: handle slugs and dashed tags
+- [ ]: more granular `getPages` api and control over filtering
+- [ ]: explicit `frontmatter` and `meta` types
+- [ ]: implement more guard rails for manipulating data (prevent overwriting `frontmatter` or `meta`)

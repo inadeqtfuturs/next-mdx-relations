@@ -5,6 +5,10 @@
   "author": "if",
   "license": "MIT",
   "types": "index.d.ts",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
     "build": "rm -rf dist && rollup --config",
     "release": "yarn build && yarn publish"

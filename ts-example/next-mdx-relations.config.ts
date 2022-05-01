@@ -4,8 +4,10 @@ import { createUtils } from 'next-mdx-relations';
 export const { getPages, getPaths, getPageProps } = createUtils({
   content: '../content',
   metaGenerators: {
-    mentions: node =>
-      markdownLinkExtractor(node.content).filter((l: string) => l[0] === '/')
+    mentions: node => {
+      const links = markdownLinkExtractor(node.content)?.links;
+      return links.filter((l: string) => l[0] === '/');
+    }
   },
   relationGenerators: {
     mentionedIn: nodes =>

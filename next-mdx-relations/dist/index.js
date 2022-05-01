@@ -1,18 +1,8 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var fs = require('fs');
-var matter = require('gray-matter');
-var serialize = require('next-mdx-remote/serialize');
-var path = require('path');
-var glob = require('fast-glob');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var matter__default = /*#__PURE__*/_interopDefaultLegacy(matter);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var glob__default = /*#__PURE__*/_interopDefaultLegacy(glob);
+import { promises } from 'fs';
+import matter from 'gray-matter';
+import { serialize } from 'next-mdx-remote/serialize';
+import path from 'path';
+import glob from 'fast-glob';
 
 // a basic isEmpty function
 function isEmpty(o) {
@@ -40,15 +30,15 @@ function getSimplifiedSlug(s) {
 async function getFiles(config, pathToFiles) {
     const usePath = pathToFiles || config.content;
     const slugRewrites = (config === null || config === void 0 ? void 0 : config.slugRewrites) || null;
-    const pathToContent = path__default["default"].join(process.cwd(), usePath);
-    const files = await glob__default["default"].sync(`${pathToContent}/**/*.(md|mdx)`, {
+    const pathToContent = path.join(process.cwd(), usePath);
+    const files = await glob.sync(`${pathToContent}/**/*.(md|mdx)`, {
         ignore: ['**/node_modules/**']
     });
     if (!files)
         return [];
     return files.map(filePath => {
         const slug = filePath
-            .replace(new RegExp(`${path__default["default"].extname(filePath)}$`), '')
+            .replace(new RegExp(`${path.extname(filePath)}$`), '')
             .replace(`${pathToContent}/`, '')
             .split('/');
         if (slugRewrites && slugRewrites[slug[0]]) {
@@ -66,8 +56,8 @@ async function getPaths(config, pathToContent) {
     return paths;
 }
 async function generatePage(file) {
-    const mdxSource = await fs.promises.readFile(file.filePath);
-    const { content, data: frontmatter } = matter__default["default"](mdxSource);
+    const mdxSource = await promises.readFile(file.filePath);
+    const { content, data: frontmatter } = matter(mdxSource);
     return {
         ...file,
         content,
@@ -155,7 +145,7 @@ async function getPageProps(config, slug) {
         return null;
     const { frontmatter, content } = page;
     const { mdxOptions } = config;
-    const mdx = await serialize.serialize(content, {
+    const mdx = await serialize(content, {
         scope: frontmatter,
         mdxOptions: { ...mdxOptions }
     });
@@ -191,8 +181,4 @@ function createUtils(config) {
     };
 }
 
-exports.createUtils = createUtils;
-exports.getPageProps = getPageProps;
-exports.getPages = getPages;
-exports.getPaths = getPaths;
-exports.getPathsByProp = getPathsByProp;
+export { createUtils, getPageProps, getPages, getPaths, getPathsByProp };
