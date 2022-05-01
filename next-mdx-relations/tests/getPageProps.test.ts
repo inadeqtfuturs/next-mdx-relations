@@ -10,6 +10,7 @@ describe('`getPageProps` functionality', () => {
     expect(pageProps).toEqual(expect.any(Object));
     expect(pageProps?.frontmatter?.title).toEqual('Post 1');
   });
+
   it('returns null when page does not exist', async () => {
     const pageProps = await getPageProps(['wrong', 'route']);
     expect(pageProps).toEqual(null);

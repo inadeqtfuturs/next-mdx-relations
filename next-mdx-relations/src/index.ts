@@ -9,6 +9,7 @@ import {
   getValueFromPath,
   isEmpty
 } from './utils';
+
 import {
   File,
   MetaGenerator,
@@ -26,7 +27,7 @@ export async function getPaths(
 ): Promise<Params[]> {
   const usePath = pathToContent || config.content;
   const files = await getFiles(config, usePath);
-  // filters out the filepath and returns JUST params object
+
   const paths = files.map(({ params }) => ({ params }));
   return paths;
 }
@@ -67,7 +68,7 @@ async function generateRelations(
   );
 }
 
-function sortPages(pages: Page[], sort: Sort | undefined) {
+function sortPages(pages: Page[], sort: Sort | undefined): Page[] {
   if (!sort) return pages;
   const { by, order } = sort;
 
@@ -88,6 +89,7 @@ function filterPages(
 ): Page[] {
   const pathValues = getPathValues({ meta, frontmatter });
   if (!Array.isArray(pathValues)) return pages;
+
   const filteredPages = pages.filter(page =>
     pathValues.reduce((bool: Boolean, { objectPath, value }) => {
       const pageValue = getValueFromPath(page, objectPath);

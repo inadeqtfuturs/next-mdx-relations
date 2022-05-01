@@ -9,6 +9,10 @@
   "exports": {
     ".": "./dist/index.js"
   },
+  "files": [
+    "dist/*.js",
+    "dist/**/*.js"
+  ],
   "scripts": {
     "build": "rm -rf dist && rollup --config",
     "release": "yarn build && yarn publish"
