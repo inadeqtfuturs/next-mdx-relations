@@ -57,15 +57,39 @@ async function generateMeta(
   );
 }
 
+const keymapRegex = new RegExp(/\[([^\]]+)]/, 'i');
+
 async function generateRelations(
   pages: Page[],
   relationGenerators: Record<string, RelationalGenerator> | null = null
 ): Promise<Page[]> {
   if (!relationGenerators) return pages;
-  return Object.values(relationGenerators).reduce(
-    (acc, generator) => generator(acc),
-    pages
-  );
+
+  return Object.entries(relationGenerators).reduce((acc, [key, value]) => {
+    const results = value(pages);
+
+    const match = key.match(keymapRegex);
+    if (match) {
+      const keymap = match[1].replace(' ', '').split(',');
+      return acc.map((x, i) => {
+        const mappedResults = keymap.reduce((keyAcc, k) => {
+          if (results[i][k]) {
+            return { ...keyAcc, [k]: results[i][k] };
+          }
+        }, {});
+
+        return {
+          ...x,
+          meta: { ...x.meta, ...mappedResults }
+        };
+      });
+    }
+
+    return acc.map((x, i) => ({
+      ...x,
+      meta: { ...x.meta, [key]: results[i] }
+    }));
+  }, pages);
 }
 
 function sortPages(pages: Page[], sort: Sort | undefined): Page[] {

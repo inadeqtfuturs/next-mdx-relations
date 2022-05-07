@@ -14,11 +14,7 @@ describe('`getPages` functionality', () => {
       titleLength: node => node.frontmatter?.title?.length || 0
     },
     relationGenerators: {
-      order: nodes =>
-        nodes.map((node, index) => ({
-          ...node,
-          index
-        }))
+      order: nodes => nodes.map((node, index) => index)
     }
   });
 
@@ -130,5 +126,69 @@ describe('`getPages` returns an empty array when no content -- ex. empty or miss
     const pages = await getPages();
     expect(pages).toEqual(expect.any(Array));
     expect(pages.length).toEqual(0);
+  });
+});
+
+describe('`getPages` relational generators', () => {
+  const { getPages } = createUtils({
+    content: '/content',
+    sort: {
+      by: 'frontmatter.title',
+      order: 'asc'
+    },
+    slugRewrites: {
+      blog: 'garden'
+    },
+    metaGenerators: {
+      titleLength: node => node.frontmatter?.title?.length || 0
+    },
+    relationGenerators: {
+      order: nodes => nodes.map((node, index) => index),
+      '[r1, r2]': nodes =>
+        nodes.map(() => ({
+          r1: Math.random(),
+          r2: Math.random()
+        })),
+      object: nodes =>
+        nodes.map(() => ({
+          r3: Math.random()
+        }))
+    }
+  });
+
+  it('adds relations to `meta` of each page', async () => {
+    const pages = await getPages();
+    pages.forEach(page => {
+      expect(page).toHaveProperty('meta');
+      expect(page.meta).toHaveProperty('r1');
+      expect(page.meta).toHaveProperty('order');
+    });
+  });
+
+  it('adds relations to correct name space (ex. order)', async () => {
+    const pages = await getPages();
+    pages.forEach(page => {
+      expect(page).toHaveProperty('meta');
+      expect(page.meta).toHaveProperty('order');
+      expect(page.meta.order).toEqual(expect.any(Number));
+    });
+  });
+
+  it('adds multiple relations to correct name space (ex. [r1, r2])', async () => {
+    const pages = await getPages();
+    pages.forEach(page => {
+      expect(page).toHaveProperty('meta');
+      expect(page.meta).toHaveProperty('r1');
+      expect(page.meta.r1).toEqual(expect.any(Number));
+    });
+  });
+
+  it('adds nested relation to correct name space (ex. object)', async () => {
+    const pages = await getPages();
+    pages.forEach(page => {
+      expect(page).toHaveProperty('meta');
+      expect(page.meta).toHaveProperty('object');
+      expect(page.meta.object).toEqual({ r3: expect.any(Number) });
+    });
   });
 });
