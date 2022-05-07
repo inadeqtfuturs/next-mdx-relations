@@ -193,7 +193,9 @@ export const {
 
 #### relationGenerators: object?
 
-`relationGenerators` is an object consisting of key value pairs that correspond to a relational attribute and the function used to generate that attribute. These functions have access to all `nodes` after they've been read and `metaGenerators` have been run.
+`relationGenerators` is an object consisting of key value pairs that correspond to a relational attribute and the function used to generate that attribute. These functions have access to all `nodes` after they've been read and `metaGenerators` have been run. We'll use the provided key to add the returned data to each page's `meta` object.
+
+`relation` keys can be defined either as a string or as a stringified array. In the example below, we're generating both the previous and next page/post. Rather than break these out into two different generators, we can generate both values in one function, and each value will be name spaced correctly.
 
 ``` js
 import { createUtils } from 'next-mdx-relations';
