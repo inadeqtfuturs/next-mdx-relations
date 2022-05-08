@@ -66,17 +66,20 @@ async function generateRelations(
   if (!relationGenerators) return pages;
 
   return Object.entries(relationGenerators).reduce((acc, [key, value]) => {
-    const results = value(pages);
+    const results: any = value(pages);
 
     const match = key.match(keymapRegex);
     if (match) {
       const keymap = match[1].replace(' ', '').split(',');
       return acc.map((x, i) => {
-        const mappedResults = keymap.reduce((keyAcc, k) => {
-          if (results[i][k]) {
-            return { ...keyAcc, [k]: results[i][k] };
-          }
-        }, {});
+        const mappedResults = keymap.reduce(
+          (keyAcc: Record<string, any>, k: string): any => {
+            if (results[i][k]) {
+              return { ...keyAcc, [k]: results[i][k] };
+            }
+          },
+          {}
+        );
 
         return {
           ...x,

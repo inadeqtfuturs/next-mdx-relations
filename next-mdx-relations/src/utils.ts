@@ -29,7 +29,7 @@ export function getValueFromPath(
 }
 
 /**
- * @description recursive function takes an object and returns object with paths and value
+ * @description recursive function takes an object and returns object with path and value
  * @returns PathValue[]
  */
 export function getPathValues(

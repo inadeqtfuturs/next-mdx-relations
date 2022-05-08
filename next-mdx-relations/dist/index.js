@@ -18,14 +18,22 @@ function getValueFromPath(o, p) {
     }
     return usePath.reduce((xs, x) => xs && xs[x] ? xs[x] : null, o);
 }
+/**
+ * @description recursive function takes an object and returns object with path and value
+ * @returns PathValue[]
+ */
 function getPathValues(o = {}, p = []) {
     return Array.isArray(o) || Object(o) !== o
         ? { objectPath: p, value: o }
         : Object.entries(o).flatMap(([k, v]) => getPathValues(v, [...p, k]));
 }
-// this is SUPER rudimentary. replace later
 function getSimplifiedSlug(s) {
-    return s.replace(' ', '-');
+    return s
+        .normalize('NFKD')
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .trim()
+        .replace(/[-\s]+/g, '-');
 }
 async function getFiles(config, pathToFiles) {
     const usePath = pathToFiles || config.content;
@@ -51,7 +59,6 @@ async function getFiles(config, pathToFiles) {
 async function getPaths(config, pathToContent) {
     const usePath = pathToContent || config.content;
     const files = await getFiles(config, usePath);
-    // filters out the filepath and returns JUST params object
     const paths = files.map(({ params }) => ({ params }));
     return paths;
 }
@@ -72,10 +79,32 @@ async function generateMeta(page, metaGenerators = null) {
         [k]: v(page)
     }), {});
 }
+const keymapRegex = new RegExp(/\[([^\]]+)]/, 'i');
 async function generateRelations(pages, relationGenerators = null) {
     if (!relationGenerators)
         return pages;
-    return Object.values(relationGenerators).reduce((acc, generator) => generator(acc), pages);
+    return Object.entries(relationGenerators).reduce((acc, [key, value]) => {
+        const results = value(pages);
+        const match = key.match(keymapRegex);
+        if (match) {
+            const keymap = match[1].replace(' ', '').split(',');
+            return acc.map((x, i) => {
+                const mappedResults = keymap.reduce((keyAcc, k) => {
+                    if (results[i][k]) {
+                        return { ...keyAcc, [k]: results[i][k] };
+                    }
+                }, {});
+                return {
+                    ...x,
+                    meta: { ...x.meta, ...mappedResults }
+                };
+            });
+        }
+        return acc.map((x, i) => ({
+            ...x,
+            meta: { ...x.meta, [key]: results[i] }
+        }));
+    }, pages);
 }
 function sortPages(pages, sort) {
     if (!sort)

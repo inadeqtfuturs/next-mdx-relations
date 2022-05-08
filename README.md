@@ -317,5 +317,4 @@ See [`types.ts`](https://github.com/inadeqtfuturs/next-mdx-relations/blob/main/n
 `next-mdx-relations` is in early days. Some things I'd like to do moving forward:
 
 - [ ]: more granular `getPathsByProp` api
-- [ ]: more robust filtering mechanisms
 - [ ]: more granular `getPages` api and control over filtering
