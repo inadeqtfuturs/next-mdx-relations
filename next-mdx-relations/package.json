@@ -1,9 +1,10 @@
 {
   "name": "next-mdx-relations",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "utilities for generating relationship between md/x files",
   "author": "if",
   "license": "MIT",
+  "type": "module",
   "types": "index.d.ts",
   "exports": {
     ".": "./dist/index.js"
