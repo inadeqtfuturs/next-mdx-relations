@@ -11,7 +11,7 @@
   "dependencies": {
     "markdown-link-extractor": "^2.0.1",
     "next": "12.1.5",
-    "next-mdx-relations": "0.0.10",
+    "next-mdx-relations": "0.0.11",
     "next-transpile-modules": "^9.0.0",
     "react": "18.1.0",
     "react-dom": "18.1.0"
