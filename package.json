@@ -23,6 +23,7 @@
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-typescript": "^7.13.0",
+    "@netlify/plugin-nextjs": "^4.7.0",
     "@types/jest": "^27.4.1",
     "@types/mock-fs": "^4.13.0",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
