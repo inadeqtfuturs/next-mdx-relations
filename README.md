@@ -133,9 +133,9 @@ Behind the scenes, we do the following:
 1. get all of the files from your content folder
 2. for each file, we generate metadata based on config provided functions, and return everything you'd want to know about that file (frontmatter, filepath, params/slug, etc)
 3. because we have access to all the files and metadata, we then allow for inserting custom relations between content. we can track when one file mentions another from the file being mentioned, for example
-4. we sort the files based on provided sort criteria
+4. we sort the files based on provided sort criteria. we sort last in case you want to sort based on generated meta or relational data
 
-At the end of this process, you have all your files sorted, and you can filter down to what you need based on the metadata and relations that have been generated.
+At the end of this process, you have all your files sorted, and you can filter down to what you need based on the meta and relational data that have been generated.
 
 ### config
 
@@ -193,10 +193,11 @@ export const {
 
 #### relationGenerators: object?
 
-`relationGenerators` is an object consisting of key value pairs that correspond to a relational attribute and the function used to generate that attribute. These functions have access to all `nodes` after they've been read and `metaGenerators` have been run.
+`relationGenerators` is an object consisting of key value pairs that correspond to a relational attribute and the function used to generate that attribute. These functions have access to all `nodes` after they've been read and `metaGenerators` have been run. We'll use the provided key to add the returned data to each page's `meta` object.
+
+`relation` keys can be defined either as a string or as a stringified array. In the example below, we're generating both the previous and next page/post. Rather than break these out into two different generators, we can generate both values in one function, and each value will be name spaced correctly.
 
 ``` js
-import { DateTime } from 'luxon';
 import { createUtils } from 'next-mdx-relations';
 
 export const {
@@ -205,30 +206,23 @@ export const {
 } = createUtils({
   content: '/content',
   relationGenerators: {
-    directionalLinks: nodes => {
-      const sortedNodes = nodes
-        // we have not sorted all our files yet, so to create
-        // directional links, we'd have to do it here
-        .sort((a, b) => a?.meta?.date - b?.meta?.date)
-        .map((node, index, array) => {
-          const prev = index > 0 ? array[index - 1] : null;
-          const next = index < array.length -1 ? array[index + 1] : null;
-          return {
-            ...node,
-            meta: {
-              ...node.meta,
-              prev,
-              next
-            }
-          };
-        });
-      return sortedNodes;
+    '[prev, next]': nodes => nodes
+      // we have not sorted all our files yet, so to create
+      // directional links, we'd have to do it here
+      .sort((a, b) => a?.meta?.date - b?.meta?.date)
+      .map((node, index, array) => {
+        const prev = index > 0 ? array[index - 1] : null;
+        const next = index < array.length -1 ? array[index + 1] : null;
+        return { prev, next };
+      }),
+    index: nodes => nodes.map((_, index) => index)
     },
-  }
 })
 ```
 
-In its current form, you can mutate any part of a given node using `relationGenerators`. In general, it's best to add this relational data to the `meta` attribute as to not mutate the frontmatter or other parts of the node.
+Additionally, we could get something simple like the index of each given node within the array of nodes.
+
+Like `metaGenerators`, `relationGenerators` has access to the whole node, but only (re)places data set in `node.meta`. This prevents unintended mutations of static data.
 
 #### mdxOptions: MDXOptions?
 
@@ -324,8 +318,7 @@ See [`types.ts`](https://github.com/inadeqtfuturs/next-mdx-relations/blob/main/n
 
 `next-mdx-relations` is in early days. Some things I'd like to do moving forward:
 
-[ ]: more granular `getPathsByProp` api
-  [ ]: handle slugs and dashed tags
-[ ]: more granular `getPages` api and control over filtering
-[ ]: explicit `frontmatter` and `meta` types
-[ ]: implement more guard rails for manipulating data (prevent overwriting `frontmatter` or `meta`)
+- [ ]: more granular `getPathsByProp` api
+- [ ]: more granular `getPages` api and control over filtering
+
+Have other ideas? Feel free to file an issue or submit a PR.

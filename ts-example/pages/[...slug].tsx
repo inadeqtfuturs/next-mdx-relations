@@ -36,7 +36,7 @@ function Slug({ mdx, ...pageNode }: MDXPage) {
           {mentionedIn.map(
             ({ frontmatter: { title, tags }, params: { slug } }: MDXPage) => (
               <div key={title} className={styles.postWrapper}>
-                <Link href={slug.join('/')} passHref>
+                <Link href={'/'.concat(slug.join('/'))} passHref>
                   <a className={styles.link}>{title}</a>
                 </Link>
                 <span>

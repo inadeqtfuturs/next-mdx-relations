@@ -16,9 +16,11 @@ export function getValueFromPath(
   if (typeof p === 'string' || p instanceof String) {
     usePath = p.split('.');
   }
+
   if (!Array.isArray(usePath)) {
     throw new Error('Please provide a path to `getValueFromPath`');
   }
+
   return usePath.reduce(
     <T extends Record<string, any>, K extends keyof T>(xs: T, x: K) =>
       xs && xs[x] ? xs[x] : null,
@@ -26,6 +28,10 @@ export function getValueFromPath(
   );
 }
 
+/**
+ * @description recursive function takes an object and returns object with path and value
+ * @returns PathValue[]
+ */
 export function getPathValues(
   o: string[] | Object = {},
   p: string[] = []
@@ -35,9 +41,13 @@ export function getPathValues(
     : Object.entries(o).flatMap(([k, v]) => getPathValues(v, [...p, k]));
 }
 
-// this is SUPER rudimentary. replace later
 export function getSimplifiedSlug(s: string): string {
-  return s.replace(' ', '-');
+  return s
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/[-\s]+/g, '-');
 }
 
 export async function getFiles(
@@ -47,7 +57,9 @@ export async function getFiles(
   const usePath = pathToFiles || config.content;
   const slugRewrites = config?.slugRewrites || null;
   const pathToContent = path.join(process.cwd(), usePath);
-  const files = await glob.sync(`${pathToContent}/**/*.(md|mdx)`);
+  const files = await glob.sync(`${pathToContent}/**/*.(md|mdx)`, {
+    ignore: ['**/node_modules/**']
+  });
   if (!files) return [];
 
   return files.map(filePath => {

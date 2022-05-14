@@ -32,7 +32,7 @@ export type Sort = {
 };
 
 export type MetaGenerator = (page: Page) => typeof page;
-export type RelationalGenerator = (pages: Page[]) => typeof pages;
+export type RelationalGenerator = (pages: Page[]) => unknown;
 
 export type MDXOptions = {
   remarkPlugins?: Pluggable[];

@@ -9,6 +9,7 @@ import {
   getValueFromPath,
   isEmpty
 } from './utils';
+
 import {
   File,
   MetaGenerator,
@@ -26,7 +27,7 @@ export async function getPaths(
 ): Promise<Params[]> {
   const usePath = pathToContent || config.content;
   const files = await getFiles(config, usePath);
-  // filters out the filepath and returns JUST params object
+
   const paths = files.map(({ params }) => ({ params }));
   return paths;
 }
@@ -56,18 +57,45 @@ async function generateMeta(
   );
 }
 
+const keymapRegex = new RegExp(/\[([^\]]+)]/, 'i');
+
 async function generateRelations(
   pages: Page[],
   relationGenerators: Record<string, RelationalGenerator> | null = null
 ): Promise<Page[]> {
   if (!relationGenerators) return pages;
-  return Object.values(relationGenerators).reduce(
-    (acc, generator) => generator(acc),
-    pages
-  );
+
+  return Object.entries(relationGenerators).reduce((acc, [key, value]) => {
+    const results: any = value(pages);
+
+    const match = key.match(keymapRegex);
+    if (match) {
+      const keymap = match[1].replace(' ', '').split(',');
+      return acc.map((x, i) => {
+        const mappedResults = keymap.reduce(
+          (keyAcc: Record<string, any>, k: string): any => {
+            if (results[i][k]) {
+              return { ...keyAcc, [k]: results[i][k] };
+            }
+          },
+          {}
+        );
+
+        return {
+          ...x,
+          meta: { ...x.meta, ...mappedResults }
+        };
+      });
+    }
+
+    return acc.map((x, i) => ({
+      ...x,
+      meta: { ...x.meta, [key]: results[i] }
+    }));
+  }, pages);
 }
 
-function sortPages(pages: Page[], sort: Sort | undefined) {
+function sortPages(pages: Page[], sort: Sort | undefined): Page[] {
   if (!sort) return pages;
   const { by, order } = sort;
 
@@ -88,6 +116,7 @@ function filterPages(
 ): Page[] {
   const pathValues = getPathValues({ meta, frontmatter });
   if (!Array.isArray(pathValues)) return pages;
+
   const filteredPages = pages.filter(page =>
     pathValues.reduce((bool: Boolean, { objectPath, value }) => {
       const pageValue = getValueFromPath(page, objectPath);
