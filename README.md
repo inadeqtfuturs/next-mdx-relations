@@ -220,7 +220,9 @@ export const {
 })
 ```
 
-Like `metaGenerators`, `relationGenerators` has access to the whole node, but only (re)places data set in `node.meta`. This prevents unintended mutations of static data. 
+Additionally, we could get something simple like the index of each given node within the array of nodes.
+
+Like `metaGenerators`, `relationGenerators` has access to the whole node, but only (re)places data set in `node.meta`. This prevents unintended mutations of static data.
 
 #### mdxOptions: MDXOptions?
 
@@ -318,3 +320,5 @@ See [`types.ts`](https://github.com/inadeqtfuturs/next-mdx-relations/blob/main/n
 
 - [ ]: more granular `getPathsByProp` api
 - [ ]: more granular `getPages` api and control over filtering
+
+Have other ideas? Feel free to file an issue or submit a PR.
