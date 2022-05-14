@@ -19,13 +19,13 @@
     "next-mdx-remote": "^4.0.3"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.0",
-    "@rollup/plugin-typescript": "^8.2.1",
-    "@types/node": "^17.0.30",
-    "rollup": "^2.71.1",
-    "rollup-plugin-analyzer": "^4.0.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-terser": "^7.0.2",
-    "typescript": "^4.6.4"
+    "@rollup/plugin-commonjs": "22.0.0",
+    "@rollup/plugin-typescript": "8.3.2",
+    "@types/node": "17.0.33",
+    "rollup": "2.73.0",
+    "rollup-plugin-analyzer": "4.0.0",
+    "rollup-plugin-peer-deps-external": "2.2.4",
+    "rollup-plugin-terser": "7.0.2",
+    "typescript": "4.6.4"
   }
 }

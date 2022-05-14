@@ -9,10 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "markdown-link-extractor": "^2.0.1",
+    "markdown-link-extractor": "2.0.1",
     "next": "12.1.5",
     "next-mdx-relations": "^0.0.14",
-    "next-transpile-modules": "^9.0.0",
+    "next-transpile-modules": "9.0.0",
     "react": "18.1.0",
     "react-dom": "18.1.0"
   },
