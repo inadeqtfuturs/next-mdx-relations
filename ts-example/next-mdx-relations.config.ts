@@ -11,14 +11,10 @@ export const { getPages, getPaths, getPageProps } = createUtils({
   },
   relationGenerators: {
     mentionedIn: nodes =>
-      nodes.map(node => ({
-        ...node,
-        meta: {
-          ...node.meta,
-          mentionedIn: nodes.filter(n =>
-            n?.meta?.mentions.includes(`/${node.params.slug.join('/')}`)
-          )
-        }
-      }))
+      nodes.map(node =>
+        nodes.filter(n =>
+          n?.meta?.mentions.includes(`/${node.params.slug.join('/')}`)
+        )
+      )
   }
 });
