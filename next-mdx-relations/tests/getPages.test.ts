@@ -152,7 +152,9 @@ describe('`getPages` relational generators', () => {
       object: nodes =>
         nodes.map(() => ({
           r3: Math.random()
-        }))
+        })),
+      relation: nodes =>
+        nodes.map(node => nodes.filter(n => n?.meta?.titleLength > 1))
     }
   });
 

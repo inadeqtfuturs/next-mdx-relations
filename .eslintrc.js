@@ -24,6 +24,8 @@ module.exports = {
   ignorePatterns: ['**/dist/*'],
   rules: {
     'linebreak-style': ['error', 'unix'],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     'no-undef': ['error'],
