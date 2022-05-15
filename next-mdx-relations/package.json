@@ -1,6 +1,6 @@
 {
   "name": "next-mdx-relations",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "utilities for generating relationship between md/x files",
   "author": "if",
   "license": "MIT",
