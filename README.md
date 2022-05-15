@@ -4,6 +4,8 @@ i have markdown. i want to generate relations between them.
 
 `next-mdx-relations` is a light set of utilities for generation relational data between markdown files. it is built to work with [`next-mdx-remote`](https://github.com/hashicorp/next-mdx-remote), which it uses as a peer dependency. `next-mdx-relations` abstracts away much of the boilerplate you would write to spin up an md/x powered next.js site, while providing control over how your md/x is processed.
 
+**Please Note**: This software is in early beta and the api is still prone to change. Please check readme between versions.
+
 ## toc
 
 1. [getting started](#getting-started)
