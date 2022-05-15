@@ -65,34 +65,50 @@ async function generateRelations(
 ): Promise<Page[]> {
   if (!relationGenerators) return pages;
 
-  return Object.entries(relationGenerators).reduce((acc, [key, value]) => {
-    const results: any = value(pages);
+  const relations = Object.entries(relationGenerators).reduce(
+    (acc, [key, generator]) => {
+      const match = key.match(keymapRegex);
+      const transform = typeof generator !== 'function' && generator.transform;
+      const map = typeof generator !== 'function' ? generator.map : generator;
 
-    const match = key.match(keymapRegex);
-    if (match) {
-      const keymap = match[1].replace(' ', '').split(',');
-      return acc.map((x, i) => {
-        const mappedResults = keymap.reduce(
-          (keyAcc: Record<string, any>, k: string): any => {
-            if (results[i][k]) {
-              return { ...keyAcc, [k]: results[i][k] };
-            }
-          },
+      const transformData: Page[] = transform ? transform(pages) : pages;
+      const results: Record<string, any> = transformData
+        .map(map)
+        .reduce(
+          (acc, x, i) => ({ ...acc, [transformData[i].filePath]: x }),
           {}
         );
 
-        return {
-          ...x,
-          meta: { ...x.meta, ...mappedResults }
-        };
-      });
-    }
+      if (match) {
+        const keymap = match[1].replace(' ', '').split(',');
+        return acc.map(({ filePath, ...rest }) => {
+          const mappedResults = keymap.reduce(
+            (keyAcc: Record<string, any>, k: string): any => {
+              if (results[filePath][k]) {
+                return { ...keyAcc, [k]: results[filePath][k] };
+              }
+            },
+            {}
+          );
 
-    return acc.map((x, i) => ({
-      ...x,
-      meta: { ...x.meta, [key]: results[i] }
-    }));
-  }, pages);
+          return {
+            filePath,
+            ...rest,
+            meta: { ...rest.meta, ...mappedResults }
+          };
+        });
+      }
+
+      return acc.map(({ filePath, ...rest }) => ({
+        filePath,
+        ...rest,
+        meta: { ...rest.meta, [key]: results[filePath] }
+      }));
+    },
+    pages
+  );
+
+  return relations;
 }
 
 function sortPages(pages: Page[], sort: Sort | undefined): Page[] {

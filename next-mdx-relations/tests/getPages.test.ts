@@ -14,7 +14,7 @@ describe('`getPages` functionality', () => {
       titleLength: node => node.frontmatter?.title?.length || 0
     },
     relationGenerators: {
-      order: nodes => nodes.map((node, index) => index)
+      order: (_, index) => index
     }
   });
 
@@ -143,20 +143,31 @@ describe('`getPages` relational generators', () => {
       titleLength: node => node.frontmatter?.title?.length || 0
     },
     relationGenerators: {
-      order: nodes => nodes.map((node, index) => index),
-      '[r1, r2]': nodes =>
-        nodes.map(() => ({
-          r1: Math.random(),
-          r2: Math.random()
-        })),
-      object: nodes =>
-        nodes.map(() => ({
-          r3: Math.random()
-        })),
-      relation: nodes =>
-        nodes.map(node => nodes.filter(n => n?.meta?.titleLength > 1))
+      order: (_, index) => index,
+      '[r1, r2]': () => ({
+        r1: Math.random(),
+        r2: Math.random()
+      }),
+      object: () => ({
+        r3: Math.random()
+      }),
+      length: {
+        transform: nodes =>
+          nodes.sort(
+            ({ meta: { titleLength: a } }, { meta: { titleLength: b } }) =>
+              b - a
+          ),
+        map: (_, i) => i
+      }
     }
   });
+
+  // key: {
+  //  transform: [] => []
+  //  map: (item, index, array) => any
+  // }
+  //
+  // key: (item, index, array) => any
 
   it('adds relations to `meta` of each page', async () => {
     const pages = await getPages();
