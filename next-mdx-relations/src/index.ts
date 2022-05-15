@@ -87,6 +87,7 @@ async function generateRelations(
               if (results[filePath][k]) {
                 return { ...keyAcc, [k]: results[filePath][k] };
               }
+              return keyAcc;
             },
             {}
           );
