@@ -4,6 +4,8 @@ i have markdown. i want to generate relations between them.
 
 `next-mdx-relations` is a light set of utilities for generation relational data between markdown files. it is built to work with [`next-mdx-remote`](https://github.com/hashicorp/next-mdx-remote), which it uses as a peer dependency. `next-mdx-relations` abstracts away much of the boilerplate you would write to spin up an md/x powered next.js site, while providing control over how your md/x is processed.
 
+**Please Note**: This software is in early beta and the api is still prone to change. Please check readme between versions.
+
 ## toc
 
 1. [getting started](#getting-started)
@@ -195,32 +197,31 @@ export const {
 
 `relationGenerators` is an object consisting of key value pairs that correspond to a relational attribute and the function used to generate that attribute. These functions have access to all `nodes` after they've been read and `metaGenerators` have been run. We'll use the provided key to add the returned data to each page's `meta` object.
 
-`relation` keys can be defined either as a string or as a stringified array. In the example below, we're generating both the previous and next page/post. Rather than break these out into two different generators, we can generate both values in one function, and each value will be name spaced correctly.
+The function values provided to `relationalGenerators` are passed directly into a `.map` function, so you have access to each item within the map as well as the array itself.
 
-``` js
-import { createUtils } from 'next-mdx-relations';
-
-export const {
-  getPaths,
-  getPages
-} = createUtils({
-  content: '/content',
-  relationGenerators: {
-    '[prev, next]': nodes => nodes
-      // we have not sorted all our files yet, so to create
-      // directional links, we'd have to do it here
-      .sort((a, b) => a?.meta?.date - b?.meta?.date)
-      .map((node, index, array) => {
-        const prev = index > 0 ? array[index - 1] : null;
-        const next = index < array.length -1 ? array[index + 1] : null;
-        return { prev, next };
-      }),
-    index: nodes => nodes.map((_, index) => index)
-    },
-})
+```js
+// return the index within the array of nodes
+index: (_, index) => index
 ```
 
-Additionally, we could get something simple like the index of each given node within the array of nodes.
+If you need to transform data before generating some relational data (like if you need to sort or filter the content), you can pass an object with `transform` and `map` as the keys. We'll use the `transform` function to keep track of items from the array of nodes, and the map function to actually return an array of relations.
+
+```js
+// return two pieces of metadata, `prev` and `next`
+'[prev, next]': {
+  // we have not sorted all our files yet, so to create
+  // directional links, we'd have to do it here
+  transform: nodes => nodes.sort((a, b) => a?.meta?.date - b?.meta?.date),
+  map: (node, index, array) => {
+    const prev = index > 0 ? array[index - 1] : null;
+    const next = index < array.length -1 ? array[index + 1] : null;
+    return { prev, next };
+  }
+```
+
+Note that `map` is also just a function being passed into a `.map` after `transform` takes place. We use `filePath` to reconcile nodes before/after transformation takes place, so mutating the `filePath` will cause issues for this function. 
+
+`relation` keys can be defined either as a string or as a stringified array. In the example above, we're generating both the previous and next page/post. Rather than break these out into two different generators, we can generate both values in one function, and each value will be name spaced correctly.
 
 Like `metaGenerators`, `relationGenerators` has access to the whole node, but only (re)places data set in `node.meta`. This prevents unintended mutations of static data.
 
@@ -318,7 +319,7 @@ See [`types.ts`](https://github.com/inadeqtfuturs/next-mdx-relations/blob/main/n
 
 `next-mdx-relations` is in early days. Some things I'd like to do moving forward:
 
-- [ ]: more granular `getPathsByProp` api
-- [ ]: more granular `getPages` api and control over filtering
+- [ ] more granular `getPathsByProp` api
+- [ ] more granular `getPages` api and control over filtering
 
 Have other ideas? Feel free to file an issue or submit a PR.
