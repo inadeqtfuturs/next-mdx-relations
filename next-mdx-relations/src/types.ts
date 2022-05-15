@@ -35,9 +35,9 @@ export type MetaGenerator = (page: Page) => typeof page;
 export type RelationalGenerator =
   | {
       transform: (pages: Page[]) => Page[];
-      map: <T>(item: T, index: number, array: T[]) => unknown[];
+      map: <T>(item: T, index: number, array: T[]) => any;
     }
-  | ((item: Page, index: number, array: Page[]) => unknown[]);
+  | ((item: Page, index: number, array: Page[]) => any);
 
 export type MDXOptions = {
   remarkPlugins?: Pluggable[];

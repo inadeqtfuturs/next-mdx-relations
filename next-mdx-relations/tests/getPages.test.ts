@@ -162,13 +162,6 @@ describe('`getPages` relational generators', () => {
     }
   });
 
-  // key: {
-  //  transform: [] => []
-  //  map: (item, index, array) => any
-  // }
-  //
-  // key: (item, index, array) => any
-
   it('adds relations to `meta` of each page', async () => {
     const pages = await getPages();
     pages.forEach(page => {
