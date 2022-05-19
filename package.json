@@ -20,9 +20,9 @@
     "next-mdx-remote": "4.0.3"
   },
   "devDependencies": {
-    "@babel/core": "7.17.10",
-    "@babel/preset-env": "7.17.10",
-    "@babel/preset-typescript": "7.16.7",
+    "@babel/core": "7.18.0",
+    "@babel/preset-env": "7.18.0",
+    "@babel/preset-typescript": "7.17.12",
     "@netlify/plugin-nextjs": "4.7.0",
     "@types/jest": "27.5.1",
     "@types/mock-fs": "4.13.1",
