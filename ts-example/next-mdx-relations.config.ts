@@ -5,7 +5,7 @@ export const { getPages, getPaths, getPageProps } = createUtils({
   content: '../content',
   metaGenerators: {
     mentions: node => {
-      const links = markdownLinkExtractor(node.content)?.links;
+      const links = markdownLinkExtractor(node.content);
       return links?.filter((l: string) => l[0] === '/');
     }
   },
