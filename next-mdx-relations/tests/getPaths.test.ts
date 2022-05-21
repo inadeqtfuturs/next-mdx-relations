@@ -1,6 +1,6 @@
 import { createUtils } from '../src';
 
-describe('`getPaths` functionality', () => {
+test('`getPaths` functionality', () => {
   const { getPaths } = createUtils({ content: '/content' });
 
   it('returns a `getPaths` function', () => {
