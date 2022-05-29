@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "lint": "eslint --fix . && echo 'linted 💯'",
-    "test": "vitest",
+    "test": "vitest run",
     "testing": "vitest watch --coverage",
     "example:dev": "yarn workspace ts-example dev",
     "example:build": "yarn workspace ts-example build",
