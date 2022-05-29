@@ -16,10 +16,12 @@ describe('getPathValues', () => {
     }
   };
 
-  expect(getPathValues(testObject)).toEqual([
-    { objectPath: ['a'], value: 24 },
-    { objectPath: ['b'], value: [1, 2, 3] },
-    { objectPath: ['deep', 'deeper'], value: [{ test: 24 }] },
-    { objectPath: ['deep', 'a'], value: 24 }
-  ]);
+  it('gets the path values', () => {
+    expect(getPathValues(testObject)).toEqual([
+      { objectPath: ['a'], value: 24 },
+      { objectPath: ['b'], value: [1, 2, 3] },
+      { objectPath: ['deep', 'deeper'], value: [{ test: 24 }] },
+      { objectPath: ['deep', 'a'], value: 24 }
+    ]);
+  });
 });

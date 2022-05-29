@@ -1,0 +1,29 @@
+name: Lint and Test
+
+on: [push]
+
+jobs:
+  test:
+    name: build, lint, and test on node 16 and ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: use node 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+      - name: install
+        run: yarn
+      - name: build
+        run: yarn package:build
+      - name: lint
+        run: yarn lint
+      - name: test
+        run: yarn test
