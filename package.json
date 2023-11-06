@@ -15,7 +15,7 @@
     "package:release": "yarn workspace next-mdx-relations release"
   },
   "dependencies": {
-    "fast-glob": "3.2.11",
+    "fast-glob": "3.3.2",
     "gray-matter": "4.0.3",
     "next-mdx-remote": "4.0.3"
   },
